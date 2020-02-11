@@ -10,7 +10,7 @@ class Homepage extends React.Component {
     return (
       <>
         <Navbar bg="light" expand="lg">
-          <Navbar.Brand href="#home">Chats</Navbar.Brand>
+          <Navbar.Brand>Chats</Navbar.Brand>
         </Navbar>
         <Chats currentUserId={currentUserId}/>
       </>
