@@ -28,12 +28,12 @@ class Chats extends React.Component {
     fetch('/users')
       .then(res => res.json())
       .then(res => {
-        const selectedUser = res[0];
+        const selectedUser = res.users[0];
 
         if(selectedUser) {
           this.fetchMessages(selectedUser.id);
         }
-        this.setState({users: res, selectedUser});
+        this.setState({users: res.users, selectedUser});
       })
   }
 
