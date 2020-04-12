@@ -42,7 +42,7 @@ class Chats extends React.Component {
       .then(res => res.json())
       .then(res => {
         const { conversations } = this.state;
-        this.setState({conversations: { ...conversations, [userId]: res }}, this.scrollDown);
+        this.setState({conversations: { ...conversations, [userId]: res.messages }}, this.scrollDown);
       })
   }
 

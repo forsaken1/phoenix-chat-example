@@ -14,8 +14,17 @@ Example.Repo.delete_all(Example.Coherence.User)
 
 %Example.Coherence.User{}
 |> Example.Coherence.User.changeset(%{
-  name: "Test User",
+  name: "Alexey",
   email: "alexey2142@mail.ru",
+  password: "12345678",
+  password_confirmation: "12345678"
+})
+|> Example.Repo.insert!()
+
+%Example.Coherence.User{}
+|> Example.Coherence.User.changeset(%{
+  name: "Test User",
+  email: "test_user@mail.ru",
   password: "12345678",
   password_confirmation: "12345678"
 })

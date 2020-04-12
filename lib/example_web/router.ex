@@ -19,6 +19,17 @@ defmodule ExampleWeb.Router do
     plug(:put_secure_browser_headers)
     plug(Coherence.Authentication.Session, protected: true)
   end
+  
+  pipeline :protected_api do
+    plug(:accepts, ["json"])
+    plug(:fetch_session)
+    plug(:put_secure_browser_headers)
+    plug(Coherence.Authentication.Session, protected: true)
+  end
+
+  pipeline :api do
+    plug :accepts, ["json"]
+  end
 
   scope "/" do
     pipe_through(:browser)
@@ -30,10 +41,6 @@ defmodule ExampleWeb.Router do
     coherence_routes(:protected)
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
   scope "/", ExampleWeb do
     pipe_through :protected
 
@@ -41,8 +48,10 @@ defmodule ExampleWeb.Router do
   end
 
   scope "/", ExampleWeb do
-    pipe_through :api
+    pipe_through :protected_api
 
-    get "/users", UsersController, :index
+    get "users", UsersController, :index
+    get "messages", MessagesController, :index
+    post "messages", MessagesController, :create
   end
 end
