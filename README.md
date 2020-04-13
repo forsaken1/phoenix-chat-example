@@ -1,4 +1,4 @@
-# Phoenix Chats Example
+# Personal Chats Phoenix React.js Example
 
 ## Reference
 
