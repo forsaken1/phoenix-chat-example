@@ -50,8 +50,8 @@ defmodule ExampleWeb.Router do
   scope "/", ExampleWeb do
     pipe_through :protected_api
 
-    get "users", UsersController, :index
-    get "messages", MessagesController, :index
-    post "messages", MessagesController, :create
+    get "/users", UsersController, :index
+    get "/messages", MessagesController, :index
+    post "/messages", MessagesController, :create
   end
 end

@@ -1,5 +1,6 @@
 import React from "react"
 import { ListGroup, Button, Row, Col } from 'react-bootstrap'
+import { Socket } from "phoenix"
 
 const HEADERS = {
   'Content-Type': 'application/json',
@@ -16,12 +17,33 @@ class Chats extends React.Component {
       users: [],
       conversations: {},
       selectedUser: null,
-      message: ''
+      message: '',
+      socket: null,
+      channels: []
     }
   }
-
+  
   componentDidMount() {
     this.fetchUsers();
+
+    let socket = new Socket("/socket", {params: {token: this.props.userToken}});
+    socket.connect();
+    this.setState({socket});
+  }
+
+  chatId = (firstId, secondId) => {
+    const ids = [firstId, secondId];
+    const sortedIds = ids.sort();
+
+    return '' + sortedIds[0] + '-' + sortedIds[1];
+  }
+
+  handleChannel = (user) => {
+    const { currentUserId } = this.props;
+    const { socket } = this.state;
+    let channel = socket.channel("chat-" + this.chatId(currentUserId, user.id), {})
+    channel.join()
+    channel.on('new_message', this.handleReceivedConversation)
   }
 
   fetchUsers() {
@@ -33,6 +55,7 @@ class Chats extends React.Component {
         if(selectedUser) {
           this.fetchMessages(selectedUser.id);
         }
+        res.users.map(user => this.handleChannel(user));
         this.setState({users: res.users, selectedUser});
       })
   }
@@ -50,8 +73,10 @@ class Chats extends React.Component {
     this.messagesContainerRef.current.scrollTop = this.messagesContainerRef.current.scrollHeight;
   }
 
-  handleReceivedConversation = (userId, response) => {
+  handleReceivedConversation = (response) => {
+    const { currentUserId } = this.props;
     const { conversations } = this.state;
+    const userId = response.user_from_id == currentUserId ? response.user_to_id : response.user_from_id;
     const messages = conversations[userId] ? conversations[userId] : [];
     
     this.setState({conversations: {...conversations, [userId]: [...messages, response]}}, this.scrollDown);
@@ -98,7 +123,7 @@ class Chats extends React.Component {
         <Col sm={6}>
           <div id="messages" className="messages-container" ref={this.messagesContainerRef}>
             {messages.map((message, i) =>
-              <div key={i} className={'message' + (message.user_from_id == currentUserId ? ' message__right' : '')}>{message.text}</div>)}
+              <div key={i} className={'message' + (message.user_from_id === currentUserId ? ' message__right' : '')}>{message.text}</div>)}
           </div>
           <div className="actions">
             <textarea value={message} onChange={this.handleUpdateTextarea} className="message-field"/>

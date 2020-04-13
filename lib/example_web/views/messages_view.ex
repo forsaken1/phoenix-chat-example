@@ -8,15 +8,15 @@ defmodule ExampleWeb.MessagesView do
   end
 
   def render("show.json", message) do
-    %{
-      text: message.text
-    }
+    message_json(message)
   end
 
-  defp message_json(message) do
+  def message_json(message) do
     %{
       id: message.id,
       text: message.text,
+      user_from_id: message.user_from_id,
+      user_to_id: message.user_to_id,
       inserted_at: message.inserted_at,
       updated_at: message.updated_at
     }

@@ -5,14 +5,14 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 class Homepage extends React.Component {
   render () {
-    const { currentUserId } = this.props;
+    const { currentUserId, userToken } = this.props;
 
     return (
       <>
         <Navbar bg="light" expand="lg">
           <Navbar.Brand>Chats</Navbar.Brand>
         </Navbar>
-        <Chats currentUserId={currentUserId}/>
+        <Chats currentUserId={currentUserId} userToken={userToken}/>
       </>
     );
   }
